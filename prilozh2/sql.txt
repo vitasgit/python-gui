@@ -1,0 +1,17 @@
+CREATE TABLE public."Slova" (
+    id       SERIAL PRIMARY KEY,
+    nazvanie TEXT NOT NULL UNIQUE
+);
+
+CREATE TABLE public."Slova_Programms" (
+    id          SERIAL PRIMARY KEY,
+    id_slovo    INTEGER REFERENCES public."Slova"(id),
+    id_programm INTEGER REFERENCES public.prog(id)
+);
+
+ALTER TABLE public.prog ADD COLUMN img_data BYTEA;
+
+-- Тестовые ключевые слова
+INSERT INTO public."Slova" (nazvanie) VALUES
+    ('антивирус'), ('графический редактор'), ('видео'),
+    ('среда разработки'), ('браузер'), ('офис');
