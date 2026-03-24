@@ -141,3 +141,44 @@ def add_program(nazvanie, opisanie, god_osnovania, img_filename, img_bytes, keyw
         q2.exec_(s)
 
     return True
+
+
+def add_user(login, password):
+    """Добавляет нового пользователя в таблицу users с ролью 'user'"""
+    q = QSqlQuery()
+    q.prepare('''
+        INSERT INTO public."users" (login, password, role)
+        VALUES (:login, :password, :role)
+        RETURNING id
+    ''')
+    q.bindValue(':login', login)
+    q.bindValue(':password', password)
+    q.bindValue(':role', 'user')  # По умолчанию обычная роль
+
+    if not q.exec_():
+        return False
+
+    return True
+
+
+def check_user(login, password):
+    """Проверяет логин и пароль пользователя в БД. Возвращает данные пользователя или None"""
+    q = QSqlQuery()
+    q.prepare('''
+        SELECT id, login, role
+        FROM public."users"
+        WHERE login = :login AND password = :password
+    ''')
+    q.bindValue(':login', login)
+    q.bindValue(':password', password)
+
+    if not q.exec_():
+        return None
+
+    if q.next():
+        return {
+            'id': q.value(0),
+            'login': q.value(1),
+            'role': q.value(2),
+        }
+    return None
