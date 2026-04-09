@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import (
     QDialog, QFormLayout, QVBoxLayout, QHBoxLayout,
     QLineEdit, QPushButton, QLabel, QMessageBox
 )
-from PyQt5.QtSql import QSqlDatabase
 
 
 class DBLoginDialog(QDialog):
@@ -63,7 +62,7 @@ class DBLoginDialog(QDialog):
         self.setLayout(main_layout)
 
     def try_connect(self):
-        """Пытается подключиться к БД с введёнными данными"""
+        """Проверяет данные и сохраняет их для подключения"""
         # Получаем данные из полей ввода
         dbname = self.input_db_name.text().strip()
         user = self.input_user.text().strip()
@@ -99,25 +98,7 @@ class DBLoginDialog(QDialog):
             QMessageBox.warning(self, 'Ошибка', 'Порт должен быть числом')
             return
 
-        # Создаём подключение к БД
-        db = QSqlDatabase.addDatabase('QPSQL')
-        db.setHostName(host)
-        db.setDatabaseName(dbname)
-        db.setPort(port_int)
-        db.setUserName(user)
-        db.setPassword(password)
-
-        # Пробуем открыть соединение
-        if not db.open():
-            # Ошибка подключения
-            QMessageBox.critical(
-                self,
-                'Ошибка подключения',
-                'Не удалось подключиться к базе данных.\n\n' + db.lastError().text()
-            )
-            return
-
-        # Сохраняем данные подключения
+        # Сохраняем данные подключения (подключение будет в main.py)
         self.db_data = {
             'dbname': dbname,
             'user': user,
