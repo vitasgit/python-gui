@@ -1,0 +1,17 @@
+До:
+q.exec_(f'''
+        SELECT prog.id, prog.nazvanie, prog.opisanie,
+               prog.god_osnovania, prog.img, prog.img_data,
+               {KEYWORDS_SUBQUERY} AS keywords
+        FROM prog
+        ORDER BY prog.nazvanie
+    ''')
+
+После:
+q.exec_(f'''
+        select prog.id, prog.nazvanie, prog.opisanie,
+               prog.god_osnovania, prog.img, prog.img_data,
+               {KEYWORDS_SUBQUERY} AS keywords
+        from prog
+        order by prog.nazvanie
+    ''')
